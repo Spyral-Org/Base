@@ -5,10 +5,10 @@ namespace Spyral
 {
 	void main()
 	{
-		std::filesystem::path root_directory = std::getenv("USERPROFILE");
+		std::filesystem::path root_directory = std::getenv("APPDATA");
 		root_directory /= "Spyral";
 
-		const auto fileManager = FileMgr(root_directory);
+		FileMgr::Init(root_directory);
 
 		while (gRunning)
 			std::this_thread::sleep_for(100ms);
