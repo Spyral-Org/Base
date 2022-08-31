@@ -10,7 +10,11 @@
 #include <filesystem>
 #include <iostream>
 
+#include <memory>
 #include <thread>
+
+#include <map>
+#include <ranges>
 
 #include <string_view>
 

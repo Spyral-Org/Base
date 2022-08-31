@@ -1,18 +1,27 @@
 #include "common.hpp"
 #include "FileMgr/FileMgr.hpp"
+#include "Memory/ModuleMgr.hpp"
+#include <fstream>
 
 namespace Spyral
 {
 	DWORD __stdcall main(void*)
 	{
-		std::filesystem::path root_directory = std::getenv("APPDATA");
-		root_directory /= "Spyral";
-
+		const auto root_directory = std::filesystem::path(std::getenv("APPDATA")) / "Spyral";
 		FileMgr::Init(root_directory);
 
-		const auto testFile = FileMgr::GetProjectFile("./cout.log");
-		auto test = std::fstream(testFile.Path(), std::ios::out);
-		test << "example output\n" << std::flush;
+		auto file = std::fstream(FileMgr::GetProjectFile("./cout.log").Path(), std::ios::out);
+		file << "Starting SpyralBase...\n";
+
+		ModuleMgr::CacheModule("GTA5.exe");
+		ModuleMgr::CacheModule("user32.dll");
+		ModuleMgr::Init();
+		file << "ModuleMgr initialized!\n";
+
+		const auto module = ModuleMgr::GetModule("GTA5.exe");
+		file << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << "\n";
+
+		file.close();
 
 		CloseHandle(gMainThread);
 		FreeLibraryAndExitThread(gInstance, 0);
