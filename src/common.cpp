@@ -2,7 +2,7 @@
 
 namespace Spyral
 {
-    std::thread gMainThread { };
+    HANDLE gMainThread { };
     HINSTANCE gInstance { nullptr };
 
     bool gRunning { false };

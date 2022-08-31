@@ -16,7 +16,7 @@
 
 namespace Spyral
 {
-    extern std::thread gMainThread;
+    extern HANDLE gMainThread;
     extern HINSTANCE gInstance;
 
     extern bool gRunning;
