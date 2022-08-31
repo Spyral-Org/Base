@@ -1,6 +1,7 @@
 #include "common.hpp"
 #include "FileMgr/FileMgr.hpp"
 #include "Memory/ModuleMgr.hpp"
+#include "Memory/PatternScanner.hpp"
 #include <fstream>
 
 namespace Spyral
@@ -14,12 +15,20 @@ namespace Spyral
 		file << "Starting SpyralBase...\n";
 
 		ModuleMgr::CacheModule("GTA5.exe");
-		ModuleMgr::CacheModule("user32.dll");
 		ModuleMgr::Init();
 		file << "ModuleMgr initialized!\n";
 
 		const auto module = ModuleMgr::GetModule("GTA5.exe");
-		file << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << "\n";
+		file << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << " : sizeof(" << module->Size() << ")\n";
+
+		PatternScanner scanner(module);
+		scanner.Add("66 0F 6E 0D ? ? ? ? 0F B7 3D", [&file](void* addr)
+		{
+			file << "Found Screen Resolution at Addr[0x" << std::hex << std::uppercase << addr << "]\n";
+
+			return true;
+		});
+		scanner.Scan();
 
 		file.close();
 

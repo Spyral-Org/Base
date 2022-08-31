@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <iostream>
 
+#include <functional>
 #include <memory>
 #include <thread>
 
