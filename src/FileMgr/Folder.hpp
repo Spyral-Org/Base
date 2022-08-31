@@ -7,10 +7,5 @@ namespace Spyral
     {
     public:
         Folder(std::filesystem::path&& folder);
-
-        Folder Move(const std::filesystem::path& newPath)
-        {
-            return BaseExplorerItem::Move<Folder>(newPath);
-        }
     };
 }

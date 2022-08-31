@@ -1,5 +1,4 @@
 #pragma once
-#include "../common.hpp"
 #include "BaseExplorerItem.hpp"
 
 namespace Spyral
@@ -9,9 +8,6 @@ namespace Spyral
     public:
         File(std::filesystem::path&& path);
 
-        File Move(const std::filesystem::path& newPath)
-        {
-            return BaseExplorerItem::Move<File>(newPath);
-        }
+        File Move(std::filesystem::path newPath);
     };
 }
