@@ -7,7 +7,7 @@ project(SpyralMenu)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
 
-add_definitions(-DNOMINMAX -DWIN32_LEAN_AND_MEAN -D_CRT_SECURE_NO_WARNINGS)
+add_definitions()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME})
