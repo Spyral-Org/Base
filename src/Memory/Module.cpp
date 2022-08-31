@@ -46,7 +46,7 @@ namespace Spyral
     bool Module::TryGetModule()
     {
         m_Base = reinterpret_cast<std::uintptr_t>(GetModuleHandleA(m_Module.data()));
-        if (m_Base)
+        if (m_Base == 0)
             return false;
         
         const auto dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_Base);
