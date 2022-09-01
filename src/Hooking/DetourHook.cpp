@@ -21,7 +21,10 @@ namespace Spyral
 
     DetourHook::~DetourHook()
     {
-
+        if (m_Target)
+        {
+            MH_RemoveHook(m_Target);
+        }
     }
 
     const std::string_view DetourHook::Name() const
