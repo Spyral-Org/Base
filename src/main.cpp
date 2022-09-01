@@ -8,30 +8,38 @@ namespace Spyral
 {
 	DWORD __stdcall main(void*)
 	{
+		AllocConsole();
+
 		const auto root_directory = std::filesystem::path(std::getenv("APPDATA")) / "Spyral";
 		FileMgr::Init(root_directory);
 
-		auto file = std::fstream(FileMgr::GetProjectFile("./cout.log").Path(), std::ios::out);
-		file << "Starting SpyralBase...\n";
+		auto cout = std::fstream("CONOUT$", std::ios::out | std::ios::app);
+		cout << "Starting SpyralBase...\n" << std::flush;
 
 		ModuleMgr::CacheModule("GTA5.exe");
 		ModuleMgr::Init();
-		file << "ModuleMgr initialized!\n";
+		cout << "ModuleMgr initialized!\n" << std::flush;
 
 		const auto module = ModuleMgr::GetModule("GTA5.exe");
-		file << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << " : sizeof(" << module->Size() << ")\n";
+		cout << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << " : sizeof(" << module->Size() << ")\n" << std::flush;
 
 		PatternScanner scanner(module);
-		scanner.Add("66 0F 6E 0D ? ? ? ? 0F B7 3D", [&file](void* addr)
+		scanner.Add("66 0F 6E 0D ? ? ? ? 0F B7 3D", [&cout](AddressHelper addr)
 		{
-			file << "Found Screen Resolution at Addr[0x" << std::hex << std::uppercase << addr << "]\n";
+			const auto x = addr.Sub(4).Relative().As<int*>();
+			const auto y = addr.Add(4).Relative().As<int*>();
+
+			cout << "Game is running at " << std::dec << *x << "x" << *y << "\n" << std::flush;
 
 			return true;
 		});
 		scanner.Scan();
 
-		file.close();
+		cout << "Finished...\n" << std::flush;
+		cout.close();
+		std::this_thread::sleep_for(5s);
 
+		FreeConsole();
 		CloseHandle(gMainThread);
 		FreeLibraryAndExitThread(gInstance, 0);
 

@@ -1,11 +1,12 @@
 #pragma once
 #include "../common.hpp"
+#include "AddressHelper.hpp"
 #include "Module.hpp"
 #include "Pattern.hpp"
 
 namespace Spyral
 {
-    using PatternCallback = std::function<bool(void*)>;
+    using PatternCallback = std::function<bool(AddressHelper)>;
     class PatternScanner final
     {
     public:
