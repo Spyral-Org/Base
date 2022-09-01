@@ -1,5 +1,5 @@
 #include "Module.hpp"
-#include <libloaderapi.h>
+#include <string.h>
 
 namespace Spyral
 {
@@ -41,6 +41,38 @@ namespace Spyral
     {
         return reinterpret_cast<void*>(
             GetProcAddress(reinterpret_cast<HMODULE>(m_Base), symbolName.data()));
+    }
+
+    void* Module::GetImport(const std::string_view symbolName) const
+    {
+        if (!m_Loaded)
+            return nullptr;
+
+        const auto dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_Base);
+        const auto ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(m_Base + dosHeader->e_lfanew);
+        const auto importsDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+
+        for (auto importDescriptor = reinterpret_cast<IMAGE_IMPORT_DESCRIPTOR*>(m_Base + importsDirectory.VirtualAddress);
+            importDescriptor->Name;
+            importDescriptor++)
+        {
+            const auto firstThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->FirstThunk);
+            const auto origThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->OriginalFirstThunk);
+
+            for (auto firstThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->FirstThunk),
+                origThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->OriginalFirstThunk);
+                origThunk->u1.AddressOfData;
+                firstThunk++, origThunk++)
+            {
+                const auto importData = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(m_Base + origThunk->u1.AddressOfData);
+
+                if (strcmp(importData->Name, symbolName.data()) == 0)
+                {
+                    return &firstThunk->u1.Function;
+                }
+            }
+        }
+        return nullptr;
     }
 
     bool Module::TryGetModule()

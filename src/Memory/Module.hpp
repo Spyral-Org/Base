@@ -15,6 +15,7 @@ namespace Spyral
         [[nodiscard]] bool Loaded() const;
 
         void* GetExport(const std::string_view symbolName) const;
+        void* GetImport(const std::string_view symbolName) const;
         bool TryGetModule();
 
     private:
