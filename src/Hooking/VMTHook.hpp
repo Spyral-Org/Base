@@ -15,7 +15,7 @@ namespace Spyral
         virtual bool IsEnabled() const override;
 
         void Hook(const std::uint32_t idx, void* detour);
-        void UnHook(const std::uint32_t idx, void* detour);
+        void UnHook(const std::uint32_t idx);
 
         std::size_t VMTSize() const;
 

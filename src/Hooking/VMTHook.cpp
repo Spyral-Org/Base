@@ -31,16 +31,39 @@ namespace Spyral
 
     bool VMTHook::Enable()
     {
+        if (m_Enabled)
+            return false;
+
         *m_VMTBaseAddr = m_NewVMT;
+        m_Enabled = true;
 
         return true;
     }
 
     bool VMTHook::Disable()
     {
+        if (!m_Enabled)
+            return false;
+
         *m_VMTBaseAddr = m_OriginalVMT;
+        m_Enabled = false;
 
         return true;
+    }
+
+    bool VMTHook::IsEnabled() const
+    {
+        return m_Enabled;
+    }
+
+    void VMTHook::Hook(const std::uint32_t idx, void* detour)
+    {
+        m_NewVMT[idx] = detour;
+    }
+
+    void VMTHook::UnHook(const std::uint32_t idx)
+    {
+        m_NewVMT[idx] = m_OriginalVMT[idx];
     }
 
     std::size_t VMTHook::GetVMTSize(void** vmt)
