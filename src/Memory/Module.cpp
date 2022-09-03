@@ -39,8 +39,27 @@ namespace Spyral
 
     void* Module::GetExport(const std::string_view symbolName) const
     {
-        return reinterpret_cast<void*>(
-            GetProcAddress(reinterpret_cast<HMODULE>(m_Base), symbolName.data()));
+        if (!m_Loaded)
+            return nullptr;
+
+        const auto dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_Base);
+        const auto ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(m_Base + dosHeader->e_lfanew);
+        const auto imageDataDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+        const auto exportDirectory = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(m_Base + imageDataDirectory.VirtualAddress);
+
+        const auto nameOffsetArray = reinterpret_cast<DWORD*>(m_Base + exportDirectory->AddressOfNames);
+        const auto ordinalArray = reinterpret_cast<WORD*>(m_Base + exportDirectory->AddressOfNameOrdinals);
+        const auto functionOffsetArray = reinterpret_cast<DWORD*>(m_Base + exportDirectory->AddressOfFunctions);
+
+        for (auto i = 0; i < exportDirectory->NumberOfFunctions; i++)
+        {
+            const auto functionName = reinterpret_cast<const char*>(m_Base + nameOffsetArray[i]);
+            if (strcmp(functionName, symbolName.data()))
+                continue;
+            
+            return functionOffsetArray + ordinalArray[i];
+        }
+        return nullptr;
     }
 
     void* Module::GetImport(const std::string_view symbolName) const
@@ -50,9 +69,9 @@ namespace Spyral
 
         const auto dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(m_Base);
         const auto ntHeader = reinterpret_cast<IMAGE_NT_HEADERS*>(m_Base + dosHeader->e_lfanew);
-        const auto importsDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+        const auto imageDataDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 
-        for (auto importDescriptor = reinterpret_cast<IMAGE_IMPORT_DESCRIPTOR*>(m_Base + importsDirectory.VirtualAddress);
+        for (auto importDescriptor = reinterpret_cast<IMAGE_IMPORT_DESCRIPTOR*>(m_Base + imageDataDirectory.VirtualAddress);
             importDescriptor->Name;
             importDescriptor++)
         {
