@@ -51,7 +51,7 @@ namespace Spyral
         const auto ordinalArray = reinterpret_cast<WORD*>(m_Base + exportDirectory->AddressOfNameOrdinals);
         const auto functionOffsetArray = reinterpret_cast<DWORD*>(m_Base + exportDirectory->AddressOfFunctions);
 
-        for (auto i = 0; i < exportDirectory->NumberOfFunctions; i++)
+        for (std::size_t i = 0; i < exportDirectory->NumberOfFunctions; i++)
         {
             const auto functionName = reinterpret_cast<const char*>(m_Base + nameOffsetArray[i]);
             if (strcmp(functionName, symbolName.data()))
