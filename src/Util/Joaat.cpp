@@ -1,13 +1,13 @@
-#include "Hash.hpp"
+#include "Joaat.hpp"
 
 namespace Spyral
 {
     /**
      * @brief Generate a 32bit hash from a string
      */
-    constexpr hash Hash(const std::string_view b)
+    constexpr joaat_t Joaat(const std::string_view b)
     {
-        hash result = 0;
+        joaat_t result = 0;
 
         for (auto c : b)
         {            
@@ -26,9 +26,9 @@ namespace Spyral
     /**
      * @brief Generate a 64bit hash from a string
      */
-    constexpr long_hash LongHash(const std::string_view b)
+    constexpr long_joaat_t LongJoaat(const std::string_view b)
     {
-        long_hash result = 0;
+        long_joaat_t result = 0;
 
         for (auto c : b)
         {            
@@ -44,13 +44,13 @@ namespace Spyral
         return result;
     }
 
-    constexpr hash operator ""_H(const char* s, std::size_t n)
+    constexpr joaat_t operator ""_J(const char* s, std::size_t n)
     {
-        return Hash(std::string(s, n));
+        return Joaat(std::string(s, n));
     }
 
-    constexpr long_hash operator ""_LH(const char* s, std::size_t n)
+    constexpr long_joaat_t operator ""_LJ(const char* s, std::size_t n)
     {
-        return LongHash(std::string(s, n));
+        return LongJoaat(std::string(s, n));
     }
 }

@@ -10,7 +10,7 @@ namespace Spyral
 
     bool ModuleMgr::CacheModuleImpl(const std::string_view moduleName)
     {
-        return m_Modules.insert({ Hash(moduleName), std::make_unique<Module>(moduleName) }).second;
+        return m_Modules.insert({ Joaat(moduleName), std::make_unique<Module>(moduleName) }).second;
     }
 
     Module* ModuleMgr::GetModule(const std::string_view moduleName)
@@ -20,7 +20,7 @@ namespace Spyral
 
     Module* ModuleMgr::GetModuleImpl(const std::string_view moduleName)
     {
-        if (const auto &it = m_Modules.find(Hash(moduleName)); it != m_Modules.end())
+        if (const auto &it = m_Modules.find(Joaat(moduleName)); it != m_Modules.end())
         {
             return it->second.get();
         }

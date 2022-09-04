@@ -1,6 +1,6 @@
 #pragma once
 #include "../common.hpp"
-#include "../Util/Hash.hpp"
+#include "../Util/Joaat.hpp"
 #include "Module.hpp"
 
 namespace Spyral
@@ -37,7 +37,7 @@ namespace Spyral
         }
 
     private:
-        std::map<hash, std::unique_ptr<Module>> m_Modules;
+        std::map<joaat_t, std::unique_ptr<Module>> m_Modules;
 
     };
 }
