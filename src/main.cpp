@@ -2,6 +2,7 @@
 #include "FileMgr/FileMgr.hpp"
 #include "Memory/ModuleMgr.hpp"
 #include "Memory/PatternScanner.hpp"
+#include "Hooking.hpp"
 #include <fstream>
 
 namespace Spyral
@@ -34,6 +35,12 @@ namespace Spyral
 			return true;
 		});
 		scanner.Scan();
+
+		Hooking::Init();
+
+		// do menu stuff (infinite while or smth)
+
+		Hooking::Destroy();
 
 		cout << "Finished...\n" << std::flush;
 		cout.close();
