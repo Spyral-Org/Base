@@ -41,7 +41,7 @@ namespace Spyral
         static T GetHook(const std::string_view name);
 
     private:
-        bool AddHook(const std::string_view name, std::unique_ptr<IHook>&& hook);
+        bool AddHook(std::unique_ptr<IHook>&& hook);
 
         void DestroyImpl();
         void InitImpl();

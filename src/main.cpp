@@ -1,8 +1,8 @@
 #include "common.hpp"
 #include "FileMgr/FileMgr.hpp"
 #include "Memory/ModuleMgr.hpp"
-#include "Memory/PatternScanner.hpp"
 #include "Hooking.hpp"
+#include "Pointers.hpp"
 #include <fstream>
 
 namespace Spyral
@@ -21,26 +21,15 @@ namespace Spyral
 		ModuleMgr::Init();
 		cout << "ModuleMgr initialized!\n" << std::flush;
 
-		const auto module = ModuleMgr::GetModule("GTA5.exe");
-		cout << "Found Module: [GTA5.exe] => 0x" << std::hex << std::uppercase << module->Base() << " : sizeof(" << module->Size() << ")\n" << std::flush;
-
-		PatternScanner scanner(module);
-		scanner.Add("66 0F 6E 0D ? ? ? ? 0F B7 3D", [&cout](AddressHelper addr)
-		{
-			const auto x = addr.Sub(4).Relative().As<int*>();
-			const auto y = addr.Add(4).Relative().As<int*>();
-
-			cout << "Game is running at " << std::dec << *x << "x" << *y << "\n" << std::flush;
-
-			return true;
-		});
-		scanner.Scan();
+		Pointers::Init();
 
 		Hooking::Init();
 
 		// do menu stuff (infinite while or smth)
 
 		Hooking::Destroy();
+
+		Pointers::Destroy();
 
 		cout << "Finished...\n" << std::flush;
 		cout.close();

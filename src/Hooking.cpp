@@ -1,10 +1,12 @@
 #include "Hooking.hpp"
+#include "Hooking/VMTHook.hpp"
+#include "Pointers.hpp"
 
 namespace Spyral
 {
     Hooking::Hooking()
     {
-        //AddHook("DX11Present", );
+        AddHook(std::make_unique<VMTHook>("DXPresent", Pointers::SwapChain));
     }
 
     Hooking::~Hooking()
@@ -49,10 +51,8 @@ namespace Spyral
         m_minhook.ApplyQueued();
     }
 
-    bool Hooking::AddHook(const std::string_view name, std::unique_ptr<IHook>&& hook)
+    bool Hooking::AddHook(std::unique_ptr<IHook>&& hook)
     {
-        const auto hash = Joaat(name);
-
-        return m_Hooks.insert({ hash, std::move(hook) }).second;
+        return m_Hooks.insert({ Joaat(hook->Name()), std::move(hook) }).second;
     }
 }
