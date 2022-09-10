@@ -2,6 +2,11 @@
 
 namespace Spyral
 {
+    constexpr char ToLower(char c)
+    {
+        return c >= 'A' && c <= 'Z' ? c | 1 << 5 : c;
+    }
+
     /**
      * @brief Generate a 32bit hash from a string
      */
@@ -11,7 +16,7 @@ namespace Spyral
 
         for (auto c : b)
         {            
-            result += c & 0x0FFL; // to lower, I'm assuming?
+            result += ToLower(c);
             result += (result << 10);
             result ^= (result >> 6);
         }
@@ -32,7 +37,7 @@ namespace Spyral
 
         for (auto c : b)
         {            
-            result += c & 0x0FFL;
+            result += ToLower(c);
             result += (result << 20);
             result ^= (result >> 12);
         }
