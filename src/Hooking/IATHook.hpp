@@ -17,6 +17,9 @@ namespace Spyral
         virtual bool Disable() override;
         virtual bool IsEnabled() const override;
 
+        template<typename T>
+        T Original() const;
+
     private:
         const std::string_view m_Name;
 
@@ -29,5 +32,10 @@ namespace Spyral
         std::uint32_t m_OldProtect;
 
     };
-    
+
+    template<typename T>
+    inline T IATHook::Original() const
+    {
+        return reinterpret_cast<T>(m_Original);
+    }
 }
