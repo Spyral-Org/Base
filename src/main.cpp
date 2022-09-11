@@ -3,39 +3,34 @@
 #include "Memory/ModuleMgr.hpp"
 #include "Hooking.hpp"
 #include "Pointers.hpp"
-#include <fstream>
 
 namespace Spyral
 {
 	DWORD __stdcall main(void*)
 	{
-		AllocConsole();
-
 		const auto root_directory = std::filesystem::path(std::getenv("APPDATA")) / "Spyral";
 		FileMgr::Init(root_directory);
 
-		auto cout = std::fstream("CONOUT$", std::ios::out | std::ios::app);
-		cout << "Starting SpyralBase...\n" << std::flush;
+		Logger::Init("SpyralMenu", FileMgr::GetProjectFile("./cout.log").Path());
+		LOG(INFO) << "Logger Initialized.";
 
-		ModuleMgr::CacheModule("GTA5.exe");
+		ModuleMgr::CacheModule("t6zm.exe");
+		ModuleMgr::CacheModule("kernel32.dll");
 		ModuleMgr::Init();
-		cout << "ModuleMgr initialized!\n" << std::flush;
 
 		Pointers::Init();
-
 		Hooking::Init();
 
-		// do menu stuff (infinite while or smth)
-
+		while (gRunning)
+		{
+			std::this_thread::sleep_for(500ms);
+		}
+		
 		Hooking::Destroy();
-
 		Pointers::Destroy();
 
-		cout << "Finished...\n" << std::flush;
-		cout.close();
-		std::this_thread::sleep_for(5s);
+		Logger::Destroy();
 
-		FreeConsole();
 		CloseHandle(gMainThread);
 		FreeLibraryAndExitThread(gInstance, 0);
 

@@ -19,6 +19,8 @@
 
 #include <string_view>
 
+#include "Logger/Logger.hpp"
+
 namespace Spyral
 {
     extern HANDLE gMainThread;
