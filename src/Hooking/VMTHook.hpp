@@ -14,6 +14,9 @@ namespace Spyral
         virtual bool Disable() override;
         virtual bool IsEnabled() const override;
 
+        template<typename T>
+        T Original(const std::uint32_t idx) const;
+
         void Hook(const std::uint32_t idx, void* detour);
         void UnHook(const std::uint32_t idx);
 
@@ -37,4 +40,10 @@ namespace Spyral
         void** m_NewVMT;
 
     };
+
+    template<typename T>
+    inline T VMTHook::Original(const std::uint32_t idx) const
+    {
+        return reinterpret_cast<T>(m_OriginalVMT[idx]);
+    }
 }
