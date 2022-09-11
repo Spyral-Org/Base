@@ -31,8 +31,10 @@ namespace Spyral
         const auto patternBytes = pattern.Get();
         for (std::uintptr_t i = module->Base(); i < module->End(); i++)
         {
-            const auto opcode = reinterpret_cast<std::uint8_t*>(i);
+            if (patternBytes.size() > module->End() - i)
+                break;
 
+            const auto opcode = reinterpret_cast<std::uint8_t*>(i);
             bool found = true;
             for (std::size_t opIdx = 0; opIdx < patternBytes.size() && found; opIdx++)
             {
@@ -43,9 +45,14 @@ namespace Spyral
             }
             
             if (found)
+            {
+                LOG(G3LOG_DEBUG) << "Found pattern @ " << HEX(i) << "";
+
                 return reinterpret_cast<void*>(i);
+            }
         }
 
+        LOG(WARNING) << "Failed to find pattern!";
         return nullptr;
     }
 }
