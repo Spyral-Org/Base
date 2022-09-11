@@ -14,14 +14,26 @@ namespace Spyral
 
         /**
          * @brief Add to the current address
+         * 
+         * @return AddressHelper 
          */
         AddressHelper Add(const std::uintptr_t offset);
         /**
          * @brief Subtract from the current address
+         * 
+         * @return AddressHelper 
          */
         AddressHelper Sub(const std::uintptr_t offset);
         /**
+         * @brief Reads the value at the current address and sets returns an AddressHelper from that address.
+         * 
+         * @return AddressHelper 
+         */
+        AddressHelper Absolute();
+        /**
          * @brief Follow the relative offset at the current address rip/lea/jmp/...
+         * 
+         * @return AddressHelper 
          */
         AddressHelper Relative();
 

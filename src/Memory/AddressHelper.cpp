@@ -23,6 +23,11 @@ namespace Spyral
         return m_Addr - offset;
     }
 
+    AddressHelper AddressHelper::Absolute()
+    {
+        return *As<void**>();
+    }
+
     AddressHelper AddressHelper::Relative()
     {
         return m_Addr + *As<std::int32_t*>() + 4;
