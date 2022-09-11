@@ -15,7 +15,6 @@ namespace Spyral
 		LOG(INFO) << "Logger Initialized.";
 
 		ModuleMgr::CacheModule("t6zm.exe");
-		ModuleMgr::CacheModule("kernel32.dll");
 		ModuleMgr::Init();
 
 		Pointers::Init();
@@ -29,6 +28,7 @@ namespace Spyral
 		Hooking::Destroy();
 		Pointers::Destroy();
 
+		LOG(INFO) << "Destroying logger and doing final cleanup.";
 		Logger::Destroy();
 
 		CloseHandle(gMainThread);
