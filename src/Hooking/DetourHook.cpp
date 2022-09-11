@@ -29,7 +29,7 @@ namespace Spyral
 
     const std::string_view DetourHook::Name() const
     {
-        return m_Name.data();
+        return m_Name;
     }
 
     bool DetourHook::Enable()
@@ -38,7 +38,9 @@ namespace Spyral
             return false;
         if (const auto result = MH_QueueEnableHook(m_Target); result != MH_OK)
         {
-            // Some failure but should we crash because of this?
+            LOG(WARNING) << "Failed to queue hook '" << m_Name << "' to be enabled.";
+
+            return false;
         }
 
         m_IsEnabled = true;
@@ -51,7 +53,9 @@ namespace Spyral
             return false;
         if (const auto result = MH_QueueDisableHook(m_Target); result != MH_OK)
         {
-            // Some failure but should we crash because of this?
+            LOG(WARNING) << "Failed to queue hook '" << m_Name << "' to be disabled.";
+
+            return false;
         }
 
         m_IsEnabled = false;
@@ -64,7 +68,9 @@ namespace Spyral
             return false;
         if (const auto result = MH_EnableHook(m_Target); result != MH_OK)
         {
-            // Some failure but should we crash because of this?
+            LOG(WARNING) << "Failed to enable hook '" << m_Name << "'";
+
+            return false;
         }
 
         m_IsEnabled = true;
@@ -77,7 +83,9 @@ namespace Spyral
             return false;
         if (const auto result = MH_DisableHook(m_Target); result != MH_OK)
         {
-            // Some failure but should we crash because of this?
+            LOG(WARNING) << "Failed to disable hook '" << m_Name << "'";
+
+            return false;
         }
 
         m_IsEnabled = true;
