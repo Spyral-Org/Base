@@ -5,5 +5,5 @@ namespace Spyral
     HANDLE gMainThread { };
     HINSTANCE gInstance { nullptr };
 
-    bool gRunning { false };
+    bool gRunning { true };
 }
