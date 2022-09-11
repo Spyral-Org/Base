@@ -1,4 +1,5 @@
 #pragma once
+#include "common.hpp"
 
 namespace Spyral::Pointers
 {
@@ -6,4 +7,6 @@ namespace Spyral::Pointers
     extern void Init();
 
     inline void*** SwapChain;
+    inline WNDPROC WndProc;
+    inline HWND hwnd;
 }

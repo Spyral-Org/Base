@@ -1,6 +1,8 @@
 #pragma once
 #include "common.hpp"
-#include "Hooking/IHook.hpp"
+#include "Hooking/DetourHook.hpp"
+#include "Hooking/IATHook.hpp"
+#include "Hooking/VMTHook.hpp"
 #include "Util/Joaat.hpp"
 #include "Util/MinHook.hpp"
 
@@ -38,7 +40,7 @@ namespace Spyral
          * @return T Hook instance
          */
         template<typename T>
-        static T GetHook(const std::string_view name);
+        static T* GetHook(const std::string_view name);
 
     private:
         bool AddHook(std::unique_ptr<IHook>&& hook);
@@ -63,13 +65,13 @@ namespace Spyral
     };
 
     template<typename T>
-    inline T Hooking::GetHook(const std::string_view name)
+    inline T* Hooking::GetHook(const std::string_view name)
     {
         const auto& i = GetInstance();
         const auto hash = Joaat(name);
 
         if (const auto& it = i.m_Hooks.find(hash); it != i.m_Hooks.end())
-            return reinterpret_cast<T>(it->second.get());
+            return reinterpret_cast<T*>(it->second.get());
         return nullptr;
     }
 }

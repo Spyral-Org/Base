@@ -1,12 +1,19 @@
 #include "Hooking.hpp"
-#include "Hooking/VMTHook.hpp"
+#include "Hooks/Hooks.hpp"
+#include "Memory/ModuleMgr.hpp"
 #include "Pointers.hpp"
 
 namespace Spyral
 {
     Hooking::Hooking()
     {
-        AddHook(std::make_unique<VMTHook>("DXPresent", Pointers::SwapChain));
+        AddHook(std::make_unique<VMTHook>("IDXGISwapChain", Pointers::SwapChain));
+        AddHook(std::make_unique<DetourHook>("WndProc", (void*)Pointers::WndProc, (void*)Window::WndProc));
+
+        if (const auto module = ModuleMgr::GetModule("t6zm.exe"); module)
+        {
+            AddHook(std::make_unique<IATHook>("IsDebuggerPresent", module->GetImport("KERNEL32.dll", "IsDebuggerPresent"), (void*)Kernel32::IsDebuggerPresent));
+        }
     }
 
     Hooking::~Hooking()
@@ -44,7 +51,7 @@ namespace Spyral
         if (m_Enabled)
             return;
         m_Enabled = true;
-
+        
         for (auto& hook : m_Hooks | std::views::values)
             hook->Enable();
 
