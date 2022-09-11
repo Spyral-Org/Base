@@ -62,7 +62,7 @@ namespace Spyral
         return nullptr;
     }
 
-    void* Module::GetImport(const std::string_view symbolName) const
+    void** Module::GetImport(const std::string_view moduleName, const std::string_view symbolName) const
     {
         if (!m_Loaded)
             return nullptr;
@@ -75,20 +75,20 @@ namespace Spyral
             importDescriptor->Name;
             importDescriptor++)
         {
+            if (const auto modName = reinterpret_cast<const char*>(m_Base + importDescriptor->Name); strcmp(modName, moduleName.data()))
+                continue;
+
             const auto firstThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->FirstThunk);
             const auto origThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->OriginalFirstThunk);
 
             for (auto firstThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->FirstThunk),
                 origThunk = reinterpret_cast<IMAGE_THUNK_DATA*>(m_Base + importDescriptor->OriginalFirstThunk);
-                origThunk->u1.AddressOfData;
+                origThunk->u1.AddressOfData != 0;
                 firstThunk++, origThunk++)
             {
-                const auto importData = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(m_Base + origThunk->u1.AddressOfData);
-
-                if (strcmp(importData->Name, symbolName.data()) == 0)
-                {
-                    return &firstThunk->u1.Function;
-                }
+                if (const auto importData = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(m_Base + origThunk->u1.AddressOfData); strcmp(importData->Name, symbolName.data()))
+                    continue;
+                return reinterpret_cast<void**>(&firstThunk->u1.Function);
             }
         }
         return nullptr;

@@ -15,7 +15,14 @@ namespace Spyral
         [[nodiscard]] bool Loaded() const;
 
         void* GetExport(const std::string_view symbolName) const;
-        void* GetImport(const std::string_view symbolName) const;
+        /**
+         * @brief Gets the address of the import function
+         * 
+         * @param moduleName The module to get the import from
+         * @param symbolName The function name
+         * @return void** 
+         */
+        void** GetImport(const std::string_view moduleName, const std::string_view symbolName) const;
         bool TryGetModule();
 
     private:

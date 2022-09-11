@@ -2,11 +2,11 @@
 
 namespace Spyral
 {
-    IATHook::IATHook(const std::string_view name, void* target, void* detour) :
+    IATHook::IATHook(const std::string_view name, void** iatAddr, void* detour) :
         m_Name(name),
-        m_Target(target),
+        m_IATAddr(iatAddr),
         m_Detour(detour),
-        m_Original(target),
+        m_Original(*iatAddr),
         m_Enabled(false),
         m_OldProtect(0)
     {
@@ -23,10 +23,10 @@ namespace Spyral
         if (m_Enabled)
             return false;
 
-        if (!VirtualProtect(&m_Target, sizeof(m_Target), PAGE_READWRITE, reinterpret_cast<DWORD*>(&m_OldProtect)))
+        if (!VirtualProtect(m_IATAddr, sizeof(void*), PAGE_READWRITE, reinterpret_cast<DWORD*>(&m_OldProtect)))
             return false;
-        
-        m_Target = m_Detour;
+        *m_IATAddr = m_Detour;
+        VirtualProtect(m_IATAddr, sizeof(void*), m_OldProtect, nullptr);
 
         m_Enabled = true;
         return true;
@@ -37,8 +37,10 @@ namespace Spyral
         if (!m_Enabled)
             return false;
         
-        m_Target = m_Original;
-        VirtualProtect(&m_Target, sizeof(m_Target), m_OldProtect, nullptr);
+        if (!VirtualProtect(m_IATAddr, sizeof(void*), PAGE_READWRITE, reinterpret_cast<DWORD*>(&m_OldProtect)))
+            return false;
+        *m_IATAddr = m_Original;
+        VirtualProtect(&m_IATAddr, sizeof(void*), m_OldProtect, nullptr);
 
         m_Enabled = false;
         return true;

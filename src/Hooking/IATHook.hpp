@@ -9,7 +9,7 @@ namespace Spyral
     private:
         /* data */
     public:
-        IATHook(const std::string_view name, void* target, void* detour);
+        IATHook(const std::string_view name, void** iatAddr, void* detour);
         virtual ~IATHook() = default;
 
         virtual const std::string_view Name() const override;
@@ -23,7 +23,7 @@ namespace Spyral
     private:
         const std::string_view m_Name;
 
-        void* m_Target;
+        void** m_IATAddr;
         void* m_Detour;
 
         void* m_Original;
