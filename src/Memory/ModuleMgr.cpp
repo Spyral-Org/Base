@@ -41,11 +41,12 @@ namespace Spyral
 
             if (mod->TryGetModule())
             {
-                // Successfully loaded
+                LOG(G3LOG_DEBUG) << "Found module [" << mod->Name() << "]\t @ [" << HEX(mod->Base()) << "]\t : sizeof[" << std::size_t(mod->Size()) << "]";
 
                 continue;
             }
-            // Failed to load
+            
+            LOG(WARNING) << "Unable to find '" << mod->Name() << "' in the current process!";
         }
     }
 }
