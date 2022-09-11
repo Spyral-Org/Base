@@ -10,6 +10,7 @@ namespace Spyral
 {
 #define ADD_COLOR_TO_STREAM(color) "\x1b[" << int(color) << "m"
 #define RESET_STREAM_COLOR "\x1b[0m"
+#define HEX(addr) "0x" << std::hex << std::uppercase << (void*)addr << std::dec << std::nouppercase
 
     class Logger final
     {
