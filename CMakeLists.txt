@@ -13,6 +13,7 @@ set(G3_SHARED_LIB OFF)
 set(CHANGE_G3LOG_DEBUG_TO_DBUG ON)
 set(ENABLE_FATAL_SIGNALHANDLING OFF)
 set(ENABLE_VECTORED_EXCEPTIONHANDLING OFF)
+set(ADD_FATAL_EXAMPLE OFF)
 add_subdirectory(vendor/g3log)
 include_directories(vendor/g3log/src)
 
