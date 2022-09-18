@@ -2,7 +2,8 @@
 
 namespace Spyral
 {
-    Pattern::Pattern(const std::string_view pattern)
+    Pattern::Pattern(const std::string_view name, const std::string_view pattern)
+        : m_Name(name)
     {
         for (std::size_t i = 0; i < pattern.length(); i++)
         {
@@ -31,5 +32,10 @@ namespace Spyral
     std::vector<std::uint8_t>& Pattern::Get()
     {
         return m_Pattern;
+    }
+
+    const std::string_view Pattern::Name() const
+    {
+        return m_Name;
     }
 }

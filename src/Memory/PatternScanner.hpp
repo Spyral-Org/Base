@@ -12,7 +12,7 @@ namespace Spyral
     public:
         PatternScanner(const Module* module);
 
-        void Add(const std::string_view pattern, PatternCallback&& cb);
+        void Add(const std::string_view name, const std::string_view pattern, PatternCallback&& cb);
         bool Scan();
 
         static void* ScanNow(const Module* module, Pattern& pattern);

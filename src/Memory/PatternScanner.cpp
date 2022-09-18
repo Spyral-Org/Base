@@ -9,9 +9,9 @@ namespace Spyral
 
     }
 
-    void PatternScanner::Add(const std::string_view pattern, PatternCallback&& cb)
+    void PatternScanner::Add(const std::string_view name, const std::string_view pattern, PatternCallback&& cb)
     {
-        m_Patterns.push_back({ pattern, cb });
+        m_Patterns.push_back({ { name, pattern }, cb });
     }
 
     bool PatternScanner::Scan()
@@ -46,13 +46,13 @@ namespace Spyral
             
             if (found)
             {
-                LOG(G3LOG_DEBUG) << "Found pattern @ " << HEX(i) << "";
+                LOG(G3LOG_DEBUG) << "Found pattern [" << pattern.Name() << "] @ " << HEX(i);
 
                 return reinterpret_cast<void*>(i);
             }
         }
 
-        LOG(WARNING) << "Failed to find pattern!";
+        LOG(WARNING) << "Failed to find pattern [" << pattern.Name() << "]!";
         return nullptr;
     }
 }
