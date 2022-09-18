@@ -1,3 +1,4 @@
+#include "../common.hpp"
 #include "DetourHook.hpp"
 #include "MinHook.h"
 #include "../Memory/AddressHelper.hpp"

@@ -1,8 +1,10 @@
 #include "common.hpp"
 #include "FileMgr/FileMgr.hpp"
+#include "GUI/GUI.hpp"
 #include "Memory/ModuleMgr.hpp"
 #include "Hooking.hpp"
 #include "Pointers.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace Spyral
 {
@@ -18,6 +20,10 @@ namespace Spyral
 		ModuleMgr::Init();
 
 		Pointers::Init();
+
+		Renderer::Init();
+		GUI::Init();
+
 		Hooking::Init();
 
 		while (gRunning)
@@ -26,6 +32,7 @@ namespace Spyral
 		}
 		
 		Hooking::Destroy();
+		Renderer::Destroy();
 		Pointers::Destroy();
 
 		LOG(INFO) << "Destroying logger and doing final cleanup.";

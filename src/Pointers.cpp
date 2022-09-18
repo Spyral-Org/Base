@@ -14,14 +14,14 @@ namespace Spyral
         const auto module = ModuleMgr::GetModule("t6zm.exe");
         PatternScanner scanner(module);
 
-		scanner.Add("A1 ?? ?? ?? ?? 81 EC 90 00 00 00", [](AddressHelper addr)
+		scanner.Add("A1 ? ? ? ? 81 EC 90 00 00 00", [](AddressHelper addr)
 		{
-			SwapChain = addr.Add(1).Absolute().As<void***>();
+            SwapChain = addr.Add(1).Absolute().As<void****>();
 
-			return true;
+            return true;
 		});
 
-        scanner.Add("83 EC 40 A1 ?? ?? ?? ?? 53 55 56 50 E8 ?? ?? ?? ?? 8B", [](AddressHelper addr)
+        scanner.Add("83 EC 40 A1 ? ? ? ? 53 55 56 50 E8 ? ? ? ? 8B", [](AddressHelper addr)
         {
             WndProc = addr.As<WNDPROC>();
 
@@ -29,5 +29,10 @@ namespace Spyral
         });
 
 		scanner.Scan();
+
+        if (hwnd = FindWindow("CoDBlackOps", nullptr); !hwnd)
+            LOG(WARNING) << "Failed to find game window.";
+
+        LOG(INFO) << "Finished module address lookups.";
     }
 }

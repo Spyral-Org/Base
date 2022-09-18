@@ -1,5 +1,6 @@
 #pragma once
 #include "IHook.hpp"
+#include <memory>
 
 namespace Spyral
 {
@@ -37,7 +38,7 @@ namespace Spyral
 
         void*** m_VMTBaseAddr;
         void** m_OriginalVMT;
-        void** m_NewVMT;
+        std::unique_ptr<void*[]> m_NewVMT;
 
     };
 

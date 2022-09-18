@@ -7,7 +7,10 @@ namespace Spyral
 {
     Hooking::Hooking()
     {
-        AddHook(std::make_unique<VMTHook>("IDXGISwapChain", Pointers::SwapChain));
+        auto swapChain = std::make_unique<VMTHook>("IDXGISwapChain", *Pointers::SwapChain);
+        swapChain->Hook(SwapChain::VMTPresentIdx, (void*)SwapChain::Present);
+        swapChain->Hook(SwapChain::VMTResizeBuffersIdx, (void*)SwapChain::ResizeBuffers);
+        AddHook(std::move(swapChain));
         AddHook(std::make_unique<DetourHook>("WndProc", (void*)Pointers::WndProc, (void*)Window::WndProc));
 
         if (const auto module = ModuleMgr::GetModule("t6zm.exe"); module)

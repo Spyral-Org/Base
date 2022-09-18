@@ -1,3 +1,4 @@
+#include "../common.hpp"
 #include "VMTHook.hpp"
 
 namespace Spyral
@@ -10,8 +11,8 @@ namespace Spyral
     {
         m_OriginalVMT = *vmtBaseAddr;
 
-        m_NewVMT = new void*[m_VMTSize];
-        memcpy(m_NewVMT, m_OriginalVMT, m_VMTSize * sizeof(void*));
+        m_NewVMT = std::make_unique<void*[]>(m_VMTSize);
+        memcpy(m_NewVMT.get(), m_OriginalVMT, m_VMTSize * sizeof(void*));
     }
 
     VMTHook::~VMTHook()
@@ -20,8 +21,6 @@ namespace Spyral
         {
             *m_VMTBaseAddr = m_OriginalVMT;
         }
-
-        delete[] m_NewVMT;
     }
 
     const std::string_view VMTHook::Name() const
@@ -34,7 +33,7 @@ namespace Spyral
         if (m_Enabled)
             return false;
 
-        *m_VMTBaseAddr = m_NewVMT;
+        *m_VMTBaseAddr = m_NewVMT.get();
         m_Enabled = true;
 
         return true;
@@ -66,10 +65,22 @@ namespace Spyral
         m_NewVMT[idx] = m_OriginalVMT[idx];
     }
 
+    std::size_t VMTHook::VMTSize() const
+    {
+        return m_VMTSize;
+    }
+
     std::size_t VMTHook::GetVMTSize(void** vmt)
     {
+#ifdef _WIN64
+        constexpr auto MAX_PTR_VAL = 0x000F000000000000;
+#else
+        constexpr auto MAX_PTR_VAL = 0xFFF00000;
+#endif
         size_t i = 0;
-        for (; vmt[i] && vmt[i] < vmt; i++);
+        for (auto ptr = vmt[i]; ptr && ptr > reinterpret_cast<void*>(0x10000) && ptr < reinterpret_cast<void*>(MAX_PTR_VAL); ptr = vmt[i])
+            i++;
+        
         return i;
     }
 }
