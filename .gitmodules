@@ -3,7 +3,7 @@
 	url = https://github.com/Spyral-Org/minhook.git
 [submodule "vendor/g3log"]
 	path = vendor/g3log
-	url = https://github.com/KjellKod/g3log.git
+	url = https://github.com/Spyral-Org/g3log.git
 [submodule "vendor/imgui"]
 	path = vendor/imgui
-	url = https://github.com/ocornut/imgui.git
+	url = https://github.com/Spyral-Org/imgui.git
