@@ -6,7 +6,7 @@ namespace Spyral::Pointers
     extern void Destroy();
     extern void Init();
 
-    inline void**** SwapChain;
+    inline IDXGISwapChain** SwapChain;
     inline WNDPROC WndProc;
     inline HWND hwnd;
 }

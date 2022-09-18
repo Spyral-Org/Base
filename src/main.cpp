@@ -16,7 +16,7 @@ namespace Spyral
 		Logger::Init("SpyralMenu", FileMgr::GetProjectFile("./cout.log").Path());
 		LOG(INFO) << "Logger Initialized.";
 
-		ModuleMgr::CacheModule("t6zm.exe");
+		ModuleMgr::CacheModule("GTA5.exe");
 		ModuleMgr::Init();
 
 		Pointers::Init();

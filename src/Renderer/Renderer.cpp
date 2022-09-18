@@ -32,7 +32,7 @@ namespace Spyral
             return false;
         }
 
-        if (m_SwapChain = reinterpret_cast<IDXGISwapChain*>(*Pointers::SwapChain); !m_SwapChain)
+        if (m_SwapChain = *Pointers::SwapChain; !m_SwapChain)
         {
             LOG(WARNING) << "Dereferenced SwapChain pointer is invalid!";
 
