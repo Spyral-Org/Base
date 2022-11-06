@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,20 +15,26 @@ set(CHANGE_G3LOG_DEBUG_TO_DBUG ON)
 set(ENABLE_FATAL_SIGNALHANDLING OFF)
 set(ENABLE_VECTORED_EXCEPTIONHANDLING OFF)
 set(ADD_FATAL_EXAMPLE OFF)
-add_subdirectory(vendor/g3log)
-include_directories(vendor/g3log/src)
 
-add_subdirectory(vendor/minhook)
-include_directories(vendor/minhook/include)
-
-set(IMGUI_VENDOR "vendor/imgui")
-file(GLOB IMGUI_SRC
-    ${IMGUI_VENDOR}/*.cpp
-    ${IMGUI_VENDOR}/backends/imgui_impl_dx11.cpp
-    ${IMGUI_VENDOR}/backends/imgui_impl_win32.cpp)
-add_library("imgui" STATIC ${IMGUI_SRC})
-target_include_directories("imgui" PUBLIC ${IMGUI_VENDOR})
-include_directories(${IMGUI_VENDOR})
+FetchContent_Declare(
+    minhook
+    GIT_REPOSITORY https://github.com/Spyral-Org/minhook.git
+    GIT_TAG        4a455528f61b5a375b1f9d44e7d296d47f18bb18
+	GIT_PROGRESS TRUE
+)
+FetchContent_Declare(
+    g3log
+    GIT_REPOSITORY https://github.com/Spyral-Org/g3log.git
+    GIT_TAG        ed91b899f07845baea0d104c7134006c138602a1
+	GIT_PROGRESS TRUE
+)
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/Spyral-Org/imgui.git
+    GIT_TAG        1dd964f87dc1ea0a76b137baf3401bd201fc2012
+	GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(minhook g3log imgui)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} g3log imgui minhook)
