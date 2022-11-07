@@ -1,43 +1,40 @@
-cmake_minimum_required(VERSION 3.12)
-include(FetchContent)
+cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(SpyralMenu)
-
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
+project(SpyralMenu CXX ASM_MASM)
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=1)
 
-set(G3_SHARED_LIB OFF)
-set(CHANGE_G3LOG_DEBUG_TO_DBUG ON)
-set(ENABLE_FATAL_SIGNALHANDLING OFF)
-set(ENABLE_VECTORED_EXCEPTIONHANDLING OFF)
-set(ADD_FATAL_EXAMPLE OFF)
+message("Fetching Modules")
+include(cmake/g3log.cmake)
+include(cmake/imgui.cmake)
+include(cmake/minhook.cmake)
 
-FetchContent_Declare(
-    minhook
-    GIT_REPOSITORY https://github.com/Spyral-Org/minhook.git
-    GIT_TAG        4a455528f61b5a375b1f9d44e7d296d47f18bb18
-	GIT_PROGRESS TRUE
-)
-FetchContent_Declare(
-    g3log
-    GIT_REPOSITORY https://github.com/Spyral-Org/g3log.git
-    GIT_TAG        ed91b899f07845baea0d104c7134006c138602a1
-	GIT_PROGRESS TRUE
-)
-FetchContent_Declare(
-    imgui
-    GIT_REPOSITORY https://github.com/Spyral-Org/imgui.git
-    GIT_TAG        1dd964f87dc1ea0a76b137baf3401bd201fc2012
-	GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(minhook g3log imgui)
+file(GLOB_RECURSE SOURCE_FILES
+    "${SRC_DIR}/*.asm"
+    "${SRC_DIR}/*.cpp"
+    "${SRC_DIR}/*.hpp")
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} g3log imgui minhook)
+add_library(${PROJECT_NAME} MODULE ${SOURCE_FILES})
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 23)
+
+add_compile_definitions(${PROJECT_NAME}
+    "_CRT_SECURE_NO_WARNINGS"
+    "NOMINMAX"
+    "WIN32_LEAN_AND_MEAN")
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${SRC_DIR}"
+    "${minhook_SOURCE_DIR}/include"
+    "${imgui_SOURCE_DIR}")
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE "${SRC_DIR}/common.hpp")
+target_link_libraries(${PROJECT_NAME} PRIVATE g3log imgui minhook)
 
 if (MSVC)
     add_compile_options(/W4 /WX)
