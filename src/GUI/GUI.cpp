@@ -19,11 +19,27 @@ namespace Spyral
 
     }
 
+    void GUI::ToggleMouse()
+    {
+        auto& io = ImGui::GetIO();
+        if (GUI::IsOpen())
+        {
+            io.MouseDrawCursor = true;
+            io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+        }
+        else
+        {
+            io.MouseDrawCursor = false;
+            io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+        }
+    }
+
     void GUI::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (msg == WM_KEYUP && wparam == VK_INSERT)
         {
             m_IsOpen = !m_IsOpen;
+            ToggleMouse();
         }
     }
 }

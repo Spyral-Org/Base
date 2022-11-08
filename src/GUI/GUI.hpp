@@ -25,6 +25,7 @@ namespace Spyral
     private:
         void WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
+        static void ToggleMouse();
         static GUI& GetInstance()
         {
             static GUI i{};
